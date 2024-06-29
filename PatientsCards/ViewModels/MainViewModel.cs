@@ -1,5 +1,6 @@
 ﻿using Domain.Models;
 using PatientsCardsUI.Commands;
+using PatientsCardsUI.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -23,8 +24,16 @@ namespace PatientsCardsUI.ViewModels
         public MainViewModel()
         {
             Persons = new ObservableCollection<Person>();
-                  
-            
+
+            RefreshView();
+
+            AddCommand = new RelayCommand(Add);
+            EditCommand = new RelayCommand(Edit);
+            DeleteCommand = new RelayCommand(Delete);
+        }
+
+        public void RefreshView()
+        {
             Random rng = new Random();
 
             // Создаем имена, фамилии и отчества для случайной генерации
@@ -43,10 +52,6 @@ namespace PatientsCardsUI.ViewModels
                     DateOfBirth = RandomDateOfBirth(rng)
                 });
             }
-
-            AddCommand = new RelayCommand(Add);
-            EditCommand = new RelayCommand(Edit);
-            DeleteCommand = new RelayCommand(Delete);
         }
 
         public static DateTime RandomDateOfBirth(Random rng)
@@ -74,7 +79,12 @@ namespace PatientsCardsUI.ViewModels
         private void Edit()
         {
             var sel = SelectedPerson;
-
+            var editVm = new EditPatientCardViewModel(sel);
+            var editWindow = new EditPatientCardWindow { DataContext = editVm };
+            if (editWindow.ShowDialog() == true)
+            {
+                //SelectedItem.Name = editVm.Item.Name; // Обновляем данные, если пользователь нажал OK
+            }
         }
 
         private void Delete()

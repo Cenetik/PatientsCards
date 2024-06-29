@@ -21,10 +21,10 @@
             <Button Content="Удалить" Margin="10" Padding="5" Width="100"/>
         </StackPanel>
 
-        <DataGrid ItemsSource="{Binding Persons}" SelectedItem="{Binding SelectedPerson}" Grid.Row="1" AutoGenerateColumns="True">
+        <DataGrid ItemsSource="{Binding Persons}" SelectedItem="{Binding SelectedPerson}" Grid.Row="1" >
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Фамилия" Binding="{Binding LastName}"/>
-                <DataGridTextColumn Header="Имя" Binding="{Binding Name}"/>
+                <DataGridTextColumn Header="Имя" Binding="{Binding FirstName}"/>
                 <DataGridTextColumn Header="Отчество" Binding="{Binding Patronymic}"/>
                 <DataGridTextColumn Header="Возраст" Binding="{Binding Age}"/>
                 <!-- Добавьте другие столбцы по необходимости -->
