@@ -1,3 +1,5 @@
 /PatientsCards/bin
 /PatientsCards/obj
 /.vs
+/Domain/obj
+/Domain/bin
