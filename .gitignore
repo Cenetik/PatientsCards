@@ -3,3 +3,5 @@
 /.vs
 /Domain/obj
 /Domain/bin
+/DataAccess/obj
+/DataAccess/bin

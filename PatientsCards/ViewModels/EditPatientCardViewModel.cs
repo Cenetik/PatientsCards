@@ -1,5 +1,6 @@
 ﻿using Domain.Models;
 using PatientsCardsUI.Commands;
+using PatientsCardsUI.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,26 +14,29 @@ namespace PatientsCardsUI.ViewModels
 {
     public class EditPatientCardViewModel : INotifyPropertyChanged
     {
-        private readonly Person person;
+        private readonly Patient patient;
 
         public ICommand AddVisitCommand { get; set; }
         public ICommand EditVisitCommand { get; set; }
         public ICommand DeleteVisitCommand { get; set; }
 
+
+        public List<Gender> Genders { get; } = new List<Gender> { Gender.Male, Gender.Female };
+
         public EditPatientCardViewModel()
         {
-            this.person = new Person();
+            this.patient = new Patient();
         }
 
-        public EditPatientCardViewModel(Person person)
+        public EditPatientCardViewModel(Patient patient)
         {
-            if (person != null)
+            if (patient != null)
             {
-                this.person = person;
+                this.patient = patient;
             }
             else
             {
-                this.person = new Person();
+                this.patient = new Patient();
             }
             AddVisitCommand = new RelayCommand(AddVisit);
             EditVisitCommand = new RelayCommand(EditVisit);
@@ -50,8 +54,13 @@ namespace PatientsCardsUI.ViewModels
         }
 
         private void AddVisit()
-        {
-            throw new NotImplementedException();
+        {            
+            var visitVm = new AddEditVisitViewModel(patient);
+            var visitWindow = new AddEditVisitWindow { DataContext = visitVm };
+            if (visitWindow.ShowDialog() == true)
+            {
+                //SelectedItem.Name = editVm.Item.Name; // Обновляем данные, если пользователь нажал OK
+            }
         }
 
 
@@ -65,66 +74,58 @@ namespace PatientsCardsUI.ViewModels
 
         public string FirstName
         {
-            get => person.FirstName;
+            get => patient.FirstName;
             set
             {
-                person.FirstName = value;
+                patient.FirstName = value;
                 OnPropertyChanged();
             }
         }
 
         public string Patronymic
         {
-            get => person.Patronymic;
+            get => patient.Patronymic;
             set
             {
-                person.Patronymic = value;
+                patient.Patronymic = value;
                 OnPropertyChanged();
             }
         }
 
         public string LastName
         {
-            get => person.LastName;
+            get => patient.LastName;
             set
             {
-                person.LastName = value;
+                patient.LastName = value;
                 OnPropertyChanged();
             }
         }
 
         public Gender Gender
         {
-            get => person.Gender;
+            get => patient.Gender;
             set
             {
-                person.Gender = value;
+                patient.Gender = value;
                 OnPropertyChanged();
             }
         }
 
         public DateTime DateOfBirth
         {
-            get => person.DateOfBirth;
+            get => patient.DateOfBirth;
             set
             {
-                person.DateOfBirth = value;
+                patient.DateOfBirth = value;
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(Age)); // Update Age when DateOfBirth changes
+                OnPropertyChanged(nameof(Age)); 
             }
         }
 
         public int Age
         {
-            get
-            {
-                var today = DateTime.Today;
-                var age = today.Year - DateOfBirth.Year;
-
-                // Go back to the year the person was born in case of a leap year
-                if (DateOfBirth > today.AddYears(-age)) age--;
-                return age;
-            }
+            get => patient.Age;            
         }
     }
 }

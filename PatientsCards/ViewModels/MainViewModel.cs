@@ -13,23 +13,25 @@ namespace PatientsCardsUI.ViewModels
 {
     public class MainViewModel
     {
-        public ObservableCollection<Person> Persons { get; set; }
+        public ObservableCollection<Patient> Patients { get; set; }
 
-        public Person SelectedPerson { get; set; }
+        public Patient SelectedPatient { get; set; }
         
-        public ICommand AddCommand { get; set; }
-        public ICommand EditCommand { get; set; }
-        public ICommand DeleteCommand { get; set; }
+        public ICommand AddPatientCommand { get; set; }
+        public ICommand EditPatientCommand { get; set; }
+        public ICommand DeletePatientCommand { get; set; }
+        public ICommand ShowPatientCardCommand { get; set; }
 
         public MainViewModel()
         {
-            Persons = new ObservableCollection<Person>();
+            Patients = new ObservableCollection<Patient>();
 
             RefreshView();
 
-            AddCommand = new RelayCommand(Add);
-            EditCommand = new RelayCommand(Edit);
-            DeleteCommand = new RelayCommand(Delete);
+            AddPatientCommand = new RelayCommand(AddPatient);
+            EditPatientCommand = new RelayCommand(EditPatient);
+            DeletePatientCommand = new RelayCommand(DeletePatient);
+            ShowPatientCardCommand = new RelayCommand(ShowPatientCard);
         }
 
         public void RefreshView()
@@ -43,7 +45,7 @@ namespace PatientsCardsUI.ViewModels
 
             for (int i = 0; i < 10; i++)
             {
-                Persons.Add(new Person
+                Patients.Add(new Patient
                 {
                     FirstName = firstNames[rng.Next(firstNames.Length)],
                     LastName = lastNames[rng.Next(lastNames.Length)],
@@ -61,24 +63,9 @@ namespace PatientsCardsUI.ViewModels
             return startDate.AddDays(rng.Next(range));
         }
 
-        private void EditPerson()
+        private void ShowPatientCard()
         {
-          /*  var editVm = new EditPatientCardViewModel(SelectedItem);
-            var editWindow = new EditItemWindow { DataContext = editVm };
-            if (editWindow.ShowDialog() == true)
-            {
-                SelectedItem.Name = editVm.Item.Name; // Обновляем данные, если пользователь нажал OK
-            }*/
-        }
-
-        private void Add()
-        {
-            // Логика добавления записи
-        }
-
-        private void Edit()
-        {
-            var sel = SelectedPerson;
+            var sel = SelectedPatient;
             var editVm = new EditPatientCardViewModel(sel);
             var editWindow = new EditPatientCardWindow { DataContext = editVm };
             if (editWindow.ShowDialog() == true)
@@ -87,9 +74,20 @@ namespace PatientsCardsUI.ViewModels
             }
         }
 
-        private void Delete()
+        private void AddPatient()
         {
-            // Логика удаления записи
+            // Логика добавления записи
+            throw new NotImplementedException();
+        }
+
+        private void EditPatient()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void DeletePatient()
+        {
+            throw new NotImplementedException();
         }
     }
 }
