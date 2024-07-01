@@ -30,6 +30,8 @@ namespace PatientsCardsUI
         {
             base.OnStartup(e);
             var mainWindow = new MainWindow();
+
+
             //var mainWindow = _serviceProvider.GetService<MainWindow>();
             mainWindow.Show();
         }

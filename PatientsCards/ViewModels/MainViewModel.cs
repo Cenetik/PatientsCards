@@ -1,4 +1,7 @@
-﻿using Domain.Models;
+﻿using DataAccess.RepositoryImpls;
+using Domain;
+using Domain.Models;
+using Domain.Repositories;
 using PatientsCardsUI.Commands;
 using PatientsCardsUI.Views;
 using System;
@@ -15,6 +18,10 @@ namespace PatientsCardsUI.ViewModels
     {
         public ObservableCollection<Patient> Patients { get; set; }
 
+        private IRepository<Doctor> doctorsRepository { get; set; }
+        private IRepository<Patient> patientsRepository { get; set; }
+        private IRepository<Visit> visitsRepository { get; set; }
+
         public Patient SelectedPatient { get; set; }
         
         public ICommand AddPatientCommand { get; set; }
@@ -24,36 +31,41 @@ namespace PatientsCardsUI.ViewModels
 
         public MainViewModel()
         {
-            Patients = new ObservableCollection<Patient>();
-
-            RefreshView();
+            Patients = new ObservableCollection<Patient>();            
 
             AddPatientCommand = new RelayCommand(AddPatient);
             EditPatientCommand = new RelayCommand(EditPatient);
             DeletePatientCommand = new RelayCommand(DeletePatient);
             ShowPatientCardCommand = new RelayCommand(ShowPatientCard);
+
+            var fakeDataFactory = new FakeDataFactory();
+            doctorsRepository = new InMemoryBaseRepository<Doctor>(fakeDataFactory.Doctors);
+            patientsRepository = new InMemoryBaseRepository<Patient>(fakeDataFactory.Patients);
+            visitsRepository = new InMemoryBaseRepository<Visit>(fakeDataFactory.Visits);
+            RefreshView();
         }
 
         public void RefreshView()
         {
-            Random rng = new Random();
+            Patients = new ObservableCollection<Patient>(patientsRepository.GetAll().ToList());
+            //Random rng = new Random();
 
-            // Создаем имена, фамилии и отчества для случайной генерации
-            string[] firstNames = { "Иван", "Алексей", "Мария", "Елена", "Сергей", "Дарья", "Николай", "Владимир", "Анна", "Ольга" };
-            string[] lastNames = { "Иванов", "Петров", "Сидоров", "Кузнецов", "Соколов", "Попов", "Лебедев", "Козлов", "Новиков", "Морозов" };
-            string[] patronymics = { "Алексеевич", "Иванович", "Дмитриевна", "Олегович", "Николаевич", "Константиновна", "Владимирович", "Петрович", "Сергеевна", "Викторович" };
+            //// Создаем имена, фамилии и отчества для случайной генерации
+            //string[] firstNames = { "Иван", "Алексей", "Мария", "Елена", "Сергей", "Дарья", "Николай", "Владимир", "Анна", "Ольга" };
+            //string[] lastNames = { "Иванов", "Петров", "Сидоров", "Кузнецов", "Соколов", "Попов", "Лебедев", "Козлов", "Новиков", "Морозов" };
+            //string[] patronymics = { "Алексеевич", "Иванович", "Дмитриевна", "Олегович", "Николаевич", "Константиновна", "Владимирович", "Петрович", "Сергеевна", "Викторович" };
 
-            for (int i = 0; i < 10; i++)
-            {
-                Patients.Add(new Patient
-                {
-                    FirstName = firstNames[rng.Next(firstNames.Length)],
-                    LastName = lastNames[rng.Next(lastNames.Length)],
-                    Patronymic = patronymics[rng.Next(patronymics.Length)],
-                    Gender = (Gender)rng.Next(2),  // случайно выбираем Мужской или Женский
-                    DateOfBirth = RandomDateOfBirth(rng)
-                });
-            }
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    Patients.Add(new Patient
+            //    {
+            //        FirstName = firstNames[rng.Next(firstNames.Length)],
+            //        LastName = lastNames[rng.Next(lastNames.Length)],
+            //        Patronymic = patronymics[rng.Next(patronymics.Length)],
+            //        Gender = (Gender)rng.Next(2),  // случайно выбираем Мужской или Женский
+            //        DateOfBirth = RandomDateOfBirth(rng)
+            //    });
+            //}
         }
 
         public static DateTime RandomDateOfBirth(Random rng)
@@ -66,7 +78,7 @@ namespace PatientsCardsUI.ViewModels
         private void ShowPatientCard()
         {
             var sel = SelectedPatient;
-            var editVm = new EditPatientCardViewModel(sel);
+            var editVm = new EditPatientCardViewModel(sel,doctorsRepository,visitsRepository);
             var editWindow = new EditPatientCardWindow { DataContext = editVm };
             if (editWindow.ShowDialog() == true)
             {

@@ -1,8 +1,10 @@
 ﻿using Domain.Models;
+using Domain.Repositories;
 using PatientsCardsUI.Commands;
 using PatientsCardsUI.Views;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -14,7 +16,12 @@ namespace PatientsCardsUI.ViewModels
 {
     public class EditPatientCardViewModel : INotifyPropertyChanged
     {
-        private readonly Patient patient;
+        private readonly Patient patient;        
+        private readonly IRepository<Doctor> doctorRepository;
+        private readonly IRepository<Visit> visitRepository;
+
+        public ObservableCollection<Visit> Visits { get; private set; }
+        public Visit SelectedVisit { get; set; }
 
         public ICommand AddVisitCommand { get; set; }
         public ICommand EditVisitCommand { get; set; }
@@ -28,7 +35,7 @@ namespace PatientsCardsUI.ViewModels
             this.patient = new Patient();
         }
 
-        public EditPatientCardViewModel(Patient patient)
+        public EditPatientCardViewModel(Patient patient, IRepository<Doctor> doctorRepository, IRepository<Visit> visitRepository)
         {
             if (patient != null)
             {
@@ -40,7 +47,11 @@ namespace PatientsCardsUI.ViewModels
             }
             AddVisitCommand = new RelayCommand(AddVisit);
             EditVisitCommand = new RelayCommand(EditVisit);
-            DeleteVisitCommand = new RelayCommand(DeleteVisit);
+            DeleteVisitCommand = new RelayCommand(DeleteVisit);            
+            this.doctorRepository = doctorRepository;
+            this.visitRepository = visitRepository;
+
+            Visits = new ObservableCollection<Visit>(visitRepository.GetAll(p => p.Patient.Id == patient.Id).ToList());
         }
 
         private void DeleteVisit()
@@ -55,7 +66,7 @@ namespace PatientsCardsUI.ViewModels
 
         private void AddVisit()
         {            
-            var visitVm = new AddEditVisitViewModel(patient);
+            var visitVm = new AddEditVisitViewModel(patient, visitRepository,doctorRepository);
             var visitWindow = new AddEditVisitWindow { DataContext = visitVm };
             if (visitWindow.ShowDialog() == true)
             {

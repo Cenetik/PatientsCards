@@ -16,9 +16,7 @@ namespace Domain.Models
 
         public Doctor Doctor { get; set; }
 
-        public Patient Patient { get; set; }
-
-        public string Recomendations { get; set; }
+        public Patient Patient { get; set; }        
         
         public string Treatment { get; set; }   
     }    

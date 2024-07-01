@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:PatientsCardsUI.ViewModels" 
         xmlns:converters="clr-namespace:PatientsCardsUI.Converters"
         mc:Ignorable="d"
-        Title="Карточки пациентов" Height="450" Width="800">
+        Title="Карточки пациентов" Height="650" Width="1000">
     <Window.DataContext>
         <local:MainViewModel/>
     </Window.DataContext>
@@ -34,6 +34,8 @@
                 <DataGridTextColumn Header="Дата рождения" Binding="{Binding DateOfBirth, StringFormat='dd.MM.yyyy'}"/>
                 <DataGridTextColumn Header="Возраст" Binding="{Binding Age}"/>
                 <DataGridTextColumn Header="Пол" Binding="{Binding Gender, Converter={StaticResource GenderToTxtConverter}}"/>
+                <DataGridTextColumn Header="Последний визит" Binding="{Binding LastVisitDate, StringFormat='dd.MM.yyyy'}"/>
+                <DataGridTextColumn Header="Врач последнего визита" Binding="{Binding LastVisitedDoctor}"/>
                 <!-- Добавьте другие столбцы по необходимости -->
             </DataGrid.Columns>
         </DataGrid>

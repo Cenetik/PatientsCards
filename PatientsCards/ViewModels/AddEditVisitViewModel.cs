@@ -1,5 +1,6 @@
 ﻿using DataAccess.RepositoryImpls;
 using Domain.Models;
+using Domain.Repositories;
 using PatientsCardsUI.Commands;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,8 @@ namespace PatientsCardsUI.ViewModels
     public class AddEditVisitViewModel : INotifyPropertyChanged
     {
         private readonly Visit visit;
-        
+        private readonly IRepository<Visit> visitsRepository;
+
         public ICommand SaveVisitCommand { get; set; }
         public ICommand CancelCommand { get; set; }
 
@@ -26,7 +28,7 @@ namespace PatientsCardsUI.ViewModels
             this.visit = new Visit();
         }
 
-        public AddEditVisitViewModel(Patient patient)
+        public AddEditVisitViewModel(Patient patient, IRepository<Visit> visitsRepository, IRepository<Doctor> doctorsRepository)
         {
             this.visit = new Visit
             {
@@ -36,13 +38,10 @@ namespace PatientsCardsUI.ViewModels
 
             SaveVisitCommand = new RelayCommand(SaveVisit);
             CancelCommand = new RelayCommand(Cancel);
-
-            var doctorsList = new List<Doctor>();
-            doctorsList.Add(new Doctor { Id = Guid.NewGuid(), LastName = "Фёдоров", FirstName = "Сергей", Patronymic = "Борисович" });
-            doctorsList.Add(new Doctor { Id = Guid.NewGuid(), LastName = "Алексеев", FirstName = "Георгий", Patronymic = "Дмитриевич" });
-        
+                    
             // Сюда бы воткнуть репозиторий
-            Doctors = doctorsList;
+            Doctors = doctorsRepository.GetAll().ToList();
+            this.visitsRepository = visitsRepository;
         }
 
         public void SaveVisit()
@@ -114,17 +113,7 @@ namespace PatientsCardsUI.ViewModels
                 visit.Treatment = value;
                 OnPropertyChanged();
             }
-        }
-
-        public string Recomendations
-        {
-            get => visit.Recomendations;
-            set
-            {
-                visit.Recomendations = value;
-                OnPropertyChanged();
-            }
-        }
+        }        
 
         public event PropertyChangedEventHandler? PropertyChanged;
         public virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
