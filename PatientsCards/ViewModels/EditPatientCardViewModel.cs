@@ -117,6 +117,9 @@ namespace PatientsCardsUI.ViewModels
             visitWindow.DataContext = visitVm;
             if (visitWindow.ShowDialog() == true)
             {
+                // Короче, это можно вернуть, просто передавать в форму редактирования SelectedVisit,
+                // а в случае ошибки сохранения возвращать значения, предварительно склонировав визит в конструкторе.
+                // Поля в случае ошибки переносить руками (у нас на ВСК был универсальный метод, но это типа круто дофига)
                 /*if (isAdd)
                     Visits.Add(visitVm.Visit);
                 else
