@@ -55,15 +55,10 @@
             <Button x:Name="deleteButton" Content="Удалить посещение" Margin="0,10,10,0" Padding ="5,0,5,0" Command="{Binding DeleteVisitCommand}"/>
         </StackPanel>
         <!-- Таблица для отображения данных -->
-        <DataGrid  ItemsSource="{Binding Visits}" SelectedItem="{Binding SelectedVisit}" x:Name="dataGridMain" Grid.Row="2" Margin="0,10" AutoGenerateColumns="False">
+        <DataGrid ItemsSource="{Binding Visits, Mode=TwoWay}" SelectedItem="{Binding SelectedVisit, Mode=TwoWay}" x:Name="dataGridMain" Grid.Row="2" Margin="0,10" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" >
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Дата посещения" Binding="{Binding DateVisit}"/>
-                <!--<DataGridTextColumn Header="Фамилия" Binding="{Binding Patient.LastName}"/>
-                <DataGridTextColumn Header="Имя" Binding="{Binding Patient.FirstName}"/>
-                <DataGridTextColumn Header="Отчество" Binding="{Binding Patient.Patronymic}"/>
-                <DataGridTextColumn Header="Возраст" Binding="{Binding Patient.DateOfBirth, StringFormat='dd.MM.yyyy'}"/>
-                <DataGridTextColumn Header="Номер полюса" Binding="{Binding Patient.SocialSecurityNumber}"/>-->
-                <DataGridTextColumn Header="Врач" Binding="{Binding Doctor}"/>
+                <DataGridTextColumn Header="Анамнез" Binding="{Binding Anamnesis, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
             </DataGrid.Columns>
         </DataGrid>        
     </Grid>

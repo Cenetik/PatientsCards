@@ -9,9 +9,10 @@ namespace Domain.Repositories
 {
     public interface IRepository<TEntity> where TEntity : BaseEntity
     {
-        void Add(TEntity item);        
+        Guid Add(TEntity item);        
         IEnumerable<TEntity> GetAll();
         IEnumerable<TEntity> GetAll(Func<TEntity, bool> predicate);
+        TEntity GetById(Guid id);
         void Delete(TEntity item);
         void Update(TEntity item);
     }

@@ -1,25 +1,21 @@
-﻿using System;
+﻿using Domain.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Models
+namespace App.Models
 {
-    public enum Gender
+    public class DoctorDto
     {
-        Unknown = 0,
-        Male = 1,
-        Female = 2        
-    }
-
-    public class Person : BaseEntity
-    {
+        public Guid Id { get; set; }
         public string LastName { get; set; }
         public string FirstName { get; set; }
         public string Patronymic { get; set; }
-        public int Gender { get; set; }
+        public Gender Gender { get; set; }
         public DateTime DateOfBirth { get; set; }
+        public string Qualification { get; set; }
 
         public int Age
         {
@@ -35,8 +31,10 @@ namespace Domain.Models
 
         public override string ToString()
         {
-            return $"{LastName} {FirstName} {Patronymic}";
+            return $"{LastName} {FirstName} {Patronymic} ({Qualification})";
             //return LastName + " " + FirstName + " " + Patronymic;
         }
     }
+
+   
 }

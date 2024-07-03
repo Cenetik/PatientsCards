@@ -1,4 +1,7 @@
-﻿using DataAccess.RepositoryImpls;
+﻿using App.Models;
+using App.Services;
+using App.Exceptions;
+using DataAccess.RepositoryImpls;
 using Domain.Models;
 using Domain.Repositories;
 using PatientsCardsUI.Commands;
@@ -15,104 +18,130 @@ namespace PatientsCardsUI.ViewModels
 {
     public class AddEditVisitViewModel : INotifyPropertyChanged
     {
-        private readonly Visit visit;
-        private readonly IRepository<Visit> visitsRepository;
+        public readonly VisitDto Visit;
+        private readonly VisitsService visitsService;
+        private readonly DoctorService doctorService;
+        private Action closeAction;
 
         public ICommand SaveVisitCommand { get; set; }
         public ICommand CancelCommand { get; set; }
 
-        public List<Doctor> Doctors { get; set; }
+        public List<DoctorDto> Doctors { get; set; }
 
         public AddEditVisitViewModel()
         {
-            this.visit = new Visit();
+            this.Visit = new VisitDto();
         }
 
-        public AddEditVisitViewModel(Patient patient, IRepository<Visit> visitsRepository, IRepository<Doctor> doctorsRepository)
+        public AddEditVisitViewModel(PatientDto patient, VisitsService visitsService, DoctorService doctorService, Guid? visitId)
         {
-            this.visit = new Visit
+            this.visitsService = visitsService;
+            this.doctorService = doctorService;
+            if (visitId == null)
             {
-                Patient = patient,
-                DateVisit = DateTime.Now,
-            };
+                this.Visit = new VisitDto
+                {
+                    Patient = patient,
+                    DateVisit = DateTime.Now,
+                };
+            }
+            else
+            {
+                this.Visit = visitsService.GetById(visitId.Value);
+            }
 
             SaveVisitCommand = new RelayCommand(SaveVisit);
             CancelCommand = new RelayCommand(Cancel);
                     
             // Сюда бы воткнуть репозиторий
-            Doctors = doctorsRepository.GetAll().ToList();
-            this.visitsRepository = visitsRepository;
+            Doctors = doctorService.GetAll().ToList();            
         }
 
         public void SaveVisit()
         {
             // сохраняем в БД
-            throw new NotImplementedException();
-        }
+            if (Visit.Id != Guid.Empty)
+            {
+                visitsService.Edit(Visit);
+            }
+            else
+            {
+                visitsService.Add(Visit);
+            }
+
+            if (CloseAction != null)
+                CloseAction.Invoke();
+        }      
 
         public void Cancel()
         {
 
         }
 
-        public AddEditVisitViewModel(Visit visit)
+        public AddEditVisitViewModel(VisitDto visit)
         {
-            this.visit = visit;
+            this.Visit = visit;
         }
 
-        public Doctor Doctor
+        public DoctorDto Doctor
         {
-            get => visit.Doctor; 
+            get => Visit.Doctor; 
             set
             {
-                visit.Doctor = value;
+                Visit.Doctor = value;
                 OnPropertyChanged();
             }
         }
 
-        public Patient Patient
+        public PatientDto Patient
         {
-            get=>visit.Patient;
+            get=> Visit.Patient;
         }
 
         public DateTime DateVisit
         {
-            get => visit.DateVisit;
+            get => Visit.DateVisit;
             set
             {
-                visit.DateVisit = value;
+                Visit.DateVisit = value;
                 OnPropertyChanged();
             }
         }
 
         public string Diagnosis
         {
-            get=>visit.Diagnosis;
+            get=> Visit.Diagnosis;
             set
             {
-                visit.Diagnosis = value;
+                Visit.Diagnosis = value;
                 OnPropertyChanged();
             }
         }
 
         public string Anamnesis
         {
-            get => visit.Anamnesis;
+            get => Visit.Anamnesis;
             set
             {
-                visit.Anamnesis = value;
+                Visit.Anamnesis = value;
                 OnPropertyChanged();
             }
         }
 
         public string Treatment
         {
-            get => visit.Treatment;
+            get => Visit.Treatment;
             set
             {
-                visit.Treatment = value;
+                Visit.Treatment = value;
                 OnPropertyChanged();
             }
+        }
+
+        public Action CloseAction 
+        { 
+            get => closeAction; 
+            set => closeAction = value; 
         }        
 
         public event PropertyChangedEventHandler? PropertyChanged;

@@ -28,7 +28,7 @@ namespace Domain
                 .RuleFor(p => p.Patronymic, f => f.PickRandom(patronymics))
                 .RuleFor(p => p.LastName, f => f.PickRandom(lastnames))
                 .RuleFor(u => u.Id, f => Guid.NewGuid())
-                .RuleFor(u => u.Gender, f => Gender.Male)
+                .RuleFor(u => u.Gender, f => (int)Gender.Male)
                 .RuleFor(u => u.Qualification, f => f.PickRandom(qualifications))
                 .RuleFor(u => u.Visits, f => new List<Visit>());
 
@@ -58,7 +58,7 @@ namespace Domain
                 .RuleFor(p => p.Patronymic, f => f.PickRandom(patronymics))
                 .RuleFor(p => p.LastName, f => f.PickRandom(lastnames))
                 .RuleFor(u => u.Id, f => Guid.NewGuid())
-                .RuleFor(u => u.Gender, f => Gender.Male)  
+                .RuleFor(u => u.Gender, f => (int)Gender.Male)  
                 .RuleFor(u=>u.SocialSecurityNumber,f=>f.PickRandom(socialNumbers))
                 .RuleFor(u => u.Visits, f => new List<Visit>());
 

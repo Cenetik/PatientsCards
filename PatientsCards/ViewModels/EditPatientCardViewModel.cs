@@ -1,4 +1,6 @@
-﻿using Domain.Models;
+﻿using App.Models;
+using App.Services;
+using Domain.Models;
 using Domain.Repositories;
 using PatientsCardsUI.Commands;
 using PatientsCardsUI.Views;
@@ -16,12 +18,36 @@ namespace PatientsCardsUI.ViewModels
 {
     public class EditPatientCardViewModel : INotifyPropertyChanged
     {
-        private readonly Patient patient;        
-        private readonly IRepository<Doctor> doctorRepository;
-        private readonly IRepository<Visit> visitRepository;
+        private readonly PatientDto patient;        
+        private readonly DoctorService doctorService;
+        private readonly VisitsService visitsService;
 
-        public ObservableCollection<Visit> Visits { get; private set; }
-        public Visit SelectedVisit { get; set; }
+        private ObservableCollection<VisitDto> visits;
+        public ObservableCollection<VisitDto> Visits
+        {
+            get => visits; 
+            set
+            {
+                if (visits != value)
+                {
+                    visits = value; OnPropertyChanged();
+                }
+            }
+        }
+
+        private VisitDto _selectedVisit;
+        public VisitDto SelectedVisit
+        {
+            get => _selectedVisit;
+            set
+            {
+                if (_selectedVisit != value)
+                {
+                    _selectedVisit = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         public ICommand AddVisitCommand { get; set; }
         public ICommand EditVisitCommand { get; set; }
@@ -32,26 +58,37 @@ namespace PatientsCardsUI.ViewModels
 
         public EditPatientCardViewModel()
         {
-            this.patient = new Patient();
+            this.patient = new PatientDto();
         }
 
-        public EditPatientCardViewModel(Patient patient, IRepository<Doctor> doctorRepository, IRepository<Visit> visitRepository)
+        public EditPatientCardViewModel(PatientDto patient, DoctorService doctorService, VisitsService visitsService)
         {
+            this.doctorService = doctorService;
+            this.visitsService = visitsService;
             if (patient != null)
             {
                 this.patient = patient;
             }
             else
             {
-                this.patient = new Patient();
+                this.patient = new PatientDto();
             }
             AddVisitCommand = new RelayCommand(AddVisit);
             EditVisitCommand = new RelayCommand(EditVisit);
-            DeleteVisitCommand = new RelayCommand(DeleteVisit);            
-            this.doctorRepository = doctorRepository;
-            this.visitRepository = visitRepository;
+            DeleteVisitCommand = new RelayCommand(DeleteVisit);
 
-            Visits = new ObservableCollection<Visit>(visitRepository.GetAll(p => p.Patient.Id == patient.Id).ToList());
+            RefreshVisits();            
+        }
+
+        private void RefreshVisits()
+        {
+            var visits = visitsService.GetByPatientId(patient.Id).ToList();
+            Visits = new ObservableCollection<VisitDto>();
+
+            foreach (var item in visits)
+            {
+                Visits.Add(item);
+            }
         }
 
         private void DeleteVisit()
@@ -61,26 +98,58 @@ namespace PatientsCardsUI.ViewModels
 
         private void EditVisit()
         {
-            throw new NotImplementedException();
+            if (SelectedVisit == null)
+                return;            
+            AddEditVisit(SelectedVisit.Id);            
+        }
+
+        private void AddEditVisit(Guid? selectedVisitId)
+        {
+            var isAdd = selectedVisitId == null;
+            var visitVm = new AddEditVisitViewModel(patient, visitsService, doctorService, selectedVisitId);
+
+            var visitWindow = new AddEditVisitWindow();
+            visitVm.CloseAction = new Action(()=>
+            {
+                visitWindow.DialogResult = true;
+                visitWindow.Close(); 
+            });
+            visitWindow.DataContext = visitVm;
+            if (visitWindow.ShowDialog() == true)
+            {
+                /*if (isAdd)
+                    Visits.Add(visitVm.Visit);
+                else
+                    MapVisit(SelectedVisit, visitVm.Visit);*/
+                //RefreshView();
+                RefreshVisits();
+            }
+            
+        }
+
+        private void MapVisit(VisitDto dest, VisitDto src)
+        {
+            dest.DateVisit = src.DateVisit;
+            dest.Diagnosis = src.Diagnosis;
+            dest.Patient = src.Patient;
+            dest.Treatment = src.Treatment;
+            dest.Anamnesis = src.Anamnesis;
+            dest.Doctor = src.Doctor;          
+            SelectedVisit = dest;
         }
 
         private void AddVisit()
-        {            
-            var visitVm = new AddEditVisitViewModel(patient, visitRepository,doctorRepository);
-            var visitWindow = new AddEditVisitWindow { DataContext = visitVm };
-            if (visitWindow.ShowDialog() == true)
-            {
-                //SelectedItem.Name = editVm.Item.Name; // Обновляем данные, если пользователь нажал OK
-            }
+        {
+            AddEditVisit(null);
         }
 
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        }       
 
 
         public string FirstName

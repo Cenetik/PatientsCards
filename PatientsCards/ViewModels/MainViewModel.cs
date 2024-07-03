@@ -1,4 +1,6 @@
-﻿using DataAccess.RepositoryImpls;
+﻿using App.Models;
+using App.Services;
+using DataAccess.RepositoryImpls;
 using Domain;
 using Domain.Models;
 using Domain.Repositories;
@@ -16,13 +18,13 @@ namespace PatientsCardsUI.ViewModels
 {
     public class MainViewModel
     {
-        public ObservableCollection<Patient> Patients { get; set; }
+        public ObservableCollection<PatientDto> Patients { get; set; }
 
-        private IRepository<Doctor> doctorsRepository { get; set; }
-        private IRepository<Patient> patientsRepository { get; set; }
-        private IRepository<Visit> visitsRepository { get; set; }
+        private DoctorService doctorService { get; set; }
+        private PatientsService patientsService { get; set; }
+        private VisitsService visitsService { get; set; }
 
-        public Patient SelectedPatient { get; set; }
+        public PatientDto SelectedPatient { get; set; }
         
         public ICommand AddPatientCommand { get; set; }
         public ICommand EditPatientCommand { get; set; }
@@ -31,7 +33,7 @@ namespace PatientsCardsUI.ViewModels
 
         public MainViewModel()
         {
-            Patients = new ObservableCollection<Patient>();            
+            Patients = new ObservableCollection<PatientDto>();            
 
             AddPatientCommand = new RelayCommand(AddPatient);
             EditPatientCommand = new RelayCommand(EditPatient);
@@ -39,33 +41,19 @@ namespace PatientsCardsUI.ViewModels
             ShowPatientCardCommand = new RelayCommand(ShowPatientCard);
 
             var fakeDataFactory = new FakeDataFactory();
-            doctorsRepository = new InMemoryBaseRepository<Doctor>(fakeDataFactory.Doctors);
-            patientsRepository = new InMemoryBaseRepository<Patient>(fakeDataFactory.Patients);
-            visitsRepository = new InMemoryBaseRepository<Visit>(fakeDataFactory.Visits);
+            var doctorsRepository = new InMemoryBaseRepository<Doctor>(fakeDataFactory.Doctors);
+            var patientsRepository = new InMemoryBaseRepository<Patient>(fakeDataFactory.Patients);
+            var visitsRepository = new InMemoryBaseRepository<Visit>(fakeDataFactory.Visits);
+
+            doctorService = new DoctorService(doctorsRepository);
+            patientsService = new PatientsService(patientsRepository,visitsRepository);
+            visitsService = new VisitsService(visitsRepository,doctorsRepository,patientsRepository);
             RefreshView();
         }
 
         public void RefreshView()
         {
-            Patients = new ObservableCollection<Patient>(patientsRepository.GetAll().ToList());
-            //Random rng = new Random();
-
-            //// Создаем имена, фамилии и отчества для случайной генерации
-            //string[] firstNames = { "Иван", "Алексей", "Мария", "Елена", "Сергей", "Дарья", "Николай", "Владимир", "Анна", "Ольга" };
-            //string[] lastNames = { "Иванов", "Петров", "Сидоров", "Кузнецов", "Соколов", "Попов", "Лебедев", "Козлов", "Новиков", "Морозов" };
-            //string[] patronymics = { "Алексеевич", "Иванович", "Дмитриевна", "Олегович", "Николаевич", "Константиновна", "Владимирович", "Петрович", "Сергеевна", "Викторович" };
-
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    Patients.Add(new Patient
-            //    {
-            //        FirstName = firstNames[rng.Next(firstNames.Length)],
-            //        LastName = lastNames[rng.Next(lastNames.Length)],
-            //        Patronymic = patronymics[rng.Next(patronymics.Length)],
-            //        Gender = (Gender)rng.Next(2),  // случайно выбираем Мужской или Женский
-            //        DateOfBirth = RandomDateOfBirth(rng)
-            //    });
-            //}
+            Patients = new ObservableCollection<PatientDto>(patientsService.GetAll().ToList());           
         }
 
         public static DateTime RandomDateOfBirth(Random rng)
@@ -78,7 +66,7 @@ namespace PatientsCardsUI.ViewModels
         private void ShowPatientCard()
         {
             var sel = SelectedPatient;
-            var editVm = new EditPatientCardViewModel(sel,doctorsRepository,visitsRepository);
+            var editVm = new EditPatientCardViewModel(sel,doctorService,visitsService);
             var editWindow = new EditPatientCardWindow { DataContext = editVm };
             if (editWindow.ShowDialog() == true)
             {

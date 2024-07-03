@@ -18,9 +18,11 @@ namespace DataAccess.RepositoryImpls
             this.data = data;
         }
 
-        public void Add(T item)
+        public Guid Add(T item)
         {
-            data = data.Append(item);
+            item.Id = Guid.NewGuid();
+            data = data.Append(item).ToList();
+            return item.Id;
         }
 
         public void Delete(T item)
@@ -36,6 +38,12 @@ namespace DataAccess.RepositoryImpls
         public IEnumerable<T> GetAll(Func<T, bool> predicate)
         {
             return data.Where(predicate).AsQueryable();
+        }
+
+        public T GetById(Guid id)
+        {
+            if (data == null) return null;
+            return data.FirstOrDefault(p => p.Id == id);
         }
 
         public void Update(T item)

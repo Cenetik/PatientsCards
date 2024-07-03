@@ -19,6 +19,7 @@ namespace PatientsCards
         public MainWindow()
         {
             InitializeComponent();
+
         }
     }
 }
