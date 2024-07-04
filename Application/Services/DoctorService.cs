@@ -57,7 +57,7 @@ namespace App.Services
             doctor.Qualification = doctorDto.Qualification;
             doctor.Gender = (int)doctorDto.Gender;               
 
-            doctorsRepository.Add(doctor);
+            doctorsRepository.Update(doctor);
         }
 
         public void Add(DoctorDto doctorDto)

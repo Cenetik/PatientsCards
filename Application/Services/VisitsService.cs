@@ -118,7 +118,7 @@ namespace App.Services
                 throw new ValidateException("Не указано лечение!");
 
             if (string.IsNullOrEmpty(visit.Diagnosis))
-                throw new ValidateException("Не указано диагноз!");
+                throw new ValidateException("Не указано диагноз!");            
         }
 
         public IList<VisitDto> GetByPatientId(Guid patientId)

@@ -22,11 +22,11 @@
         <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
             <Button Content="Открыть карточку пациента" Margin="10" Padding="5" Command="{Binding ShowPatientCardCommand}"/>
             <Button Content="Добавить пациента" Margin="10" Padding="5" Command="{Binding AddPatientCommand}"/>
-            <Button Content="Редактировать пациента" Margin="10" Padding="5" Command="{Binding EditPatientCommand}"/>
-            <Button Content="Удалить пациента" Margin="10" Padding="5"  Command="{Binding DeletePatientCommand}"/>
+            <!--<Button Content="Редактировать пациента" Margin="10" Padding="5" Command="{Binding EditPatientCommand}"/>-->
+            <!--<Button Content="Удалить пациента" Margin="10" Padding="5"  Command="{Binding DeletePatientCommand}"/>-->
         </StackPanel>
 
-        <DataGrid ItemsSource="{Binding Patients}" SelectedItem="{Binding SelectedPatient}" Grid.Row="1" AutoGenerateColumns="False">
+        <DataGrid ItemsSource="{Binding Patients}" SelectedItem="{Binding SelectedPatient}" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Фамилия" Binding="{Binding LastName}"/>
                 <DataGridTextColumn Header="Имя" Binding="{Binding FirstName}"/>

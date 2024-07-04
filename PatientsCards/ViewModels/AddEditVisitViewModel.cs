@@ -37,6 +37,8 @@ namespace PatientsCardsUI.ViewModels
         {
             this.visitsService = visitsService;
             this.doctorService = doctorService;
+            // Сюда бы воткнуть репозиторий
+            Doctors = doctorService.GetAll().ToList();
             if (visitId == null)
             {
                 this.Visit = new VisitDto
@@ -50,11 +52,11 @@ namespace PatientsCardsUI.ViewModels
                 this.Visit = visitsService.GetById(visitId.Value);
             }
 
+            if(this.Visit.Doctor!=null)
+                Doctor = Doctors.First(p=>p.Id == Visit.Doctor.Id);
+
             SaveVisitCommand = new RelayCommand(SaveVisit);
             CancelCommand = new RelayCommand(Cancel);
-                    
-            // Сюда бы воткнуть репозиторий
-            Doctors = doctorService.GetAll().ToList();            
         }
 
         public void SaveVisit()

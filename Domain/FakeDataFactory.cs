@@ -38,7 +38,7 @@ namespace Domain
             patronymics = new[] { "Ивановна", "Сергеевна", "Александровна", "Алексеевна", "Фёдоровна", "Семёновна" };
             lastnames = new[] { "Кукушкина", "Городецкая", "Клюкова", "Дорохович", "Плинтус", "Катакомба", "Кукумбер" };
             var socialNumbers = new[]
-        {
+            {
                 "2222554892722",
                 "6t46464353467",
                 "2556756787686",
@@ -58,11 +58,41 @@ namespace Domain
                 .RuleFor(p => p.Patronymic, f => f.PickRandom(patronymics))
                 .RuleFor(p => p.LastName, f => f.PickRandom(lastnames))
                 .RuleFor(u => u.Id, f => Guid.NewGuid())
-                .RuleFor(u => u.Gender, f => (int)Gender.Male)  
+                .RuleFor(u => u.Gender, f => (int)Gender.Female)  
                 .RuleFor(u=>u.SocialSecurityNumber,f=>f.PickRandom(socialNumbers))
                 .RuleFor(u => u.Visits, f => new List<Visit>());
 
             Patients = testPatients.Generate(10);
+
+            names = new[] { "Иван", "Сергей", "Игорь", "Николай", "Борис", "Леонид", "Семён" };
+            patronymics = new[] { "Иванович", "Сергеевич", "Александрович", "Алексеевич", "Фёдорович", "Семёнович" };
+            lastnames = new[] { "Клюквин", "Буркатовский", "Бритва", "Кузнецов", "Карась", "Тараканов", "Дихлофосов" };
+            socialNumbers = new[]
+            {
+                "9988548751164",
+                "6456434534564",
+                "3767563534555",
+                "7657534534534",
+                "5855635437856",
+                "0856763432674",
+                "9685643458754",
+                "9574635235788",
+                "9676562431574",
+                "9764526262254",
+            };
+
+            testPatients = new Faker<Patient>()
+                .StrictMode(true)
+                .RuleFor(p => p.DateOfBirth, f => f.Date.Past(10, new DateTime(1980, 1, 1)))
+                .RuleFor(p => p.FirstName, f => f.PickRandom(names))
+                .RuleFor(p => p.Patronymic, f => f.PickRandom(patronymics))
+                .RuleFor(p => p.LastName, f => f.PickRandom(lastnames))
+                .RuleFor(u => u.Id, f => Guid.NewGuid())
+                .RuleFor(u => u.Gender, f => (int)Gender.Male)
+                .RuleFor(u => u.SocialSecurityNumber, f => f.PickRandom(socialNumbers))
+                .RuleFor(u => u.Visits, f => new List<Visit>());
+
+            Patients.AddRange(testPatients.Generate(10));
 
             var anamnesises = new[] { "жалобы на боль в груди после физических нагрузок.",
                                       "жалуется на головокружения и слабость.",
@@ -111,7 +141,7 @@ namespace Domain
                 .RuleFor(p => p.DateVisit, f => f.Date.Past(1, DateTime.Now))
                 .RuleFor(u => u.Id, f => Guid.NewGuid());
 
-            Visits = testVisits.Generate(10);
+            Visits = testVisits.Generate(20);
 
             foreach (var v in Visits)
             {

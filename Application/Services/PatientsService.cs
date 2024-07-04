@@ -76,7 +76,7 @@ namespace App.Services
             patient.SocialSecurityNumber = patientDto.SocialSecurityNumber;
             patient.Gender = (int)patientDto.Gender;
 
-            patientsRepository.Add(patient);
+            patientsRepository.Update(patient);
         }
 
         public void Add(PatientDto patientDto)
@@ -111,6 +111,12 @@ namespace App.Services
                 throw new ValidateException("Не указана фамилия!");
             if (string.IsNullOrEmpty(patient.Patronymic))
                 throw new ValidateException("Не указано отчество!");
+            if (string.IsNullOrEmpty(patient.SocialSecurityNumber))
+                throw new ValidateException("Не указан номер полиса!");
+
+            patient.SocialSecurityNumber = patient.SocialSecurityNumber.Trim();
+            if(!patient.SocialSecurityNumber.IsNumeric())
+                throw new ValidateException("Номер полиса содержит недопустимые символы! Допустимы только цифры без пробелов!");
         }
     }
 }

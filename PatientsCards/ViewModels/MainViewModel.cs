@@ -9,16 +9,32 @@ using PatientsCardsUI.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace PatientsCardsUI.ViewModels
 {
-    public class MainViewModel
+    public class MainViewModel : INotifyPropertyChanged
     {
-        public ObservableCollection<PatientDto> Patients { get; set; }
+        private ObservableCollection<PatientDto> patients;
+
+        public ObservableCollection<PatientDto> Patients
+        {
+            get => patients;
+            set
+            {
+                if (patients != value)
+                {
+                    patients = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         private DoctorService doctorService { get; set; }
         private PatientsService patientsService { get; set; }
@@ -53,7 +69,7 @@ namespace PatientsCardsUI.ViewModels
 
         public void RefreshView()
         {
-            Patients = new ObservableCollection<PatientDto>(patientsService.GetAll().ToList());           
+            Patients = new ObservableCollection<PatientDto>(patientsService.GetAll().OrderBy(p=>p.LastName).ToList());           
         }
 
         public static DateTime RandomDateOfBirth(Random rng)
@@ -65,19 +81,21 @@ namespace PatientsCardsUI.ViewModels
 
         private void ShowPatientCard()
         {
-            var sel = SelectedPatient;
-            var editVm = new EditPatientCardViewModel(sel,doctorService,visitsService);
+            var patient = SelectedPatient;
+            var editVm = new EditPatientCardViewModel(patient, patientsService, doctorService,visitsService);            
             var editWindow = new EditPatientCardWindow { DataContext = editVm };
-            if (editWindow.ShowDialog() == true)
-            {
-                //SelectedItem.Name = editVm.Item.Name; // Обновляем данные, если пользователь нажал OK
-            }
+            editWindow.ShowDialog();
+            RefreshView();
         }
 
         private void AddPatient()
         {
             // Логика добавления записи
-            throw new NotImplementedException();
+            var sel = SelectedPatient;
+            var editVm = new EditPatientCardViewModel(null, patientsService, doctorService, visitsService);
+            var editWindow = new EditPatientCardWindow { DataContext = editVm };
+            editWindow.ShowDialog();            
+            RefreshView();
         }
 
         private void EditPatient()
@@ -88,6 +106,13 @@ namespace PatientsCardsUI.ViewModels
         private void DeletePatient()
         {
             throw new NotImplementedException();
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

@@ -12,13 +12,15 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace PatientsCardsUI.ViewModels
 {
     public class EditPatientCardViewModel : INotifyPropertyChanged
     {
-        private readonly PatientDto patient;        
+        private readonly PatientDto patient;
+        private readonly PatientsService patientsService;
         private readonly DoctorService doctorService;
         private readonly VisitsService visitsService;
 
@@ -30,7 +32,8 @@ namespace PatientsCardsUI.ViewModels
             {
                 if (visits != value)
                 {
-                    visits = value; OnPropertyChanged();
+                    visits = value; 
+                    OnPropertyChanged();
                 }
             }
         }
@@ -52,6 +55,9 @@ namespace PatientsCardsUI.ViewModels
         public ICommand AddVisitCommand { get; set; }
         public ICommand EditVisitCommand { get; set; }
         public ICommand DeleteVisitCommand { get; set; }
+        public ICommand SavePatientCommand { get; set; }
+
+        public Action<string> ShowMessage { get; set; }
 
 
         public List<Gender> Genders { get; } = new List<Gender> { Gender.Male, Gender.Female };
@@ -61,8 +67,9 @@ namespace PatientsCardsUI.ViewModels
             this.patient = new PatientDto();
         }
 
-        public EditPatientCardViewModel(PatientDto patient, DoctorService doctorService, VisitsService visitsService)
+        public EditPatientCardViewModel(PatientDto patient, PatientsService patientsService, DoctorService doctorService, VisitsService visitsService)
         {
+            this.patientsService = patientsService;
             this.doctorService = doctorService;
             this.visitsService = visitsService;
             if (patient != null)
@@ -76,19 +83,25 @@ namespace PatientsCardsUI.ViewModels
             AddVisitCommand = new RelayCommand(AddVisit);
             EditVisitCommand = new RelayCommand(EditVisit);
             DeleteVisitCommand = new RelayCommand(DeleteVisit);
+            SavePatientCommand = new RelayCommand(SavePatient);
 
             RefreshVisits();            
         }
 
+        private void SavePatient()
+        {
+            if(patient.Id!=Guid.Empty)
+                patientsService.Edit(patient);
+            else
+                patientsService.Add(patient);
+
+            MessageBox.Show("Данные о пациенте успешно сохранены!");
+        }
+
         private void RefreshVisits()
         {
-            var visits = visitsService.GetByPatientId(patient.Id).ToList();
-            Visits = new ObservableCollection<VisitDto>();
-
-            foreach (var item in visits)
-            {
-                Visits.Add(item);
-            }
+            var visits = visitsService.GetByPatientId(patient.Id).OrderByDescending(p=>p.DateVisit).ToList();
+            Visits = new ObservableCollection<VisitDto>(visits);            
         }
 
         private void DeleteVisit()
@@ -116,18 +129,9 @@ namespace PatientsCardsUI.ViewModels
             });
             visitWindow.DataContext = visitVm;
             if (visitWindow.ShowDialog() == true)
-            {
-                // Короче, это можно вернуть, просто передавать в форму редактирования SelectedVisit,
-                // а в случае ошибки сохранения возвращать значения, предварительно склонировав визит в конструкторе.
-                // Поля в случае ошибки переносить руками (у нас на ВСК был универсальный метод, но это типа круто дофига)
-                /*if (isAdd)
-                    Visits.Add(visitVm.Visit);
-                else
-                    MapVisit(SelectedVisit, visitVm.Visit);*/
-                //RefreshView();
+            {                              
                 RefreshVisits();
-            }
-            
+            }            
         }
 
         private void MapVisit(VisitDto dest, VisitDto src)
@@ -171,6 +175,16 @@ namespace PatientsCardsUI.ViewModels
             set
             {
                 patient.Patronymic = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string SocialSecurityNumber
+        {
+            get => patient.SocialSecurityNumber;
+            set
+            {
+                patient.SocialSecurityNumber = value;
                 OnPropertyChanged();
             }
         }
