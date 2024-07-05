@@ -21,7 +21,7 @@
         </Grid.RowDefinitions>
 
         <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
-            <Button Content="Открыть карточку пациента" Margin="10" Padding="5" Command="{Binding ShowPatientCardCommand}"/>
+            <Button Content="Открыть карточку пациента" Margin="10" Padding="5" Command="{Binding ShowPatientCardCommand}" />
             <Button Content="Добавить пациента" Margin="10" Padding="5" Command="{Binding AddPatientCommand}"/>
             <!--<Button Content="Редактировать пациента" Margin="10" Padding="5" Command="{Binding EditPatientCommand}"/>-->
             <!--<Button Content="Удалить пациента" Margin="10" Padding="5"  Command="{Binding DeletePatientCommand}"/>-->
