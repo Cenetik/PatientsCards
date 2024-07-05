@@ -8,7 +8,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Style="{StaticResource MaterialDesignWindow}"
-        Title="Карточка пациента" Height="800" Width="1000">
+        Title="Карточка пациента" Height="500" Width="1300">
     <Window.DataContext>
         <local:EditPatientCardViewModel/>
     </Window.DataContext>
@@ -16,14 +16,14 @@
         <converters:GenderToTextConverter x:Key="GenderToTxtConverter"></converters:GenderToTextConverter>
     </Window.Resources>
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>            
+        </Grid.ColumnDefinitions>
 
         <!-- Поля для ввода -->
-        <GroupBox  Padding="5" Header="Пациент"  Grid.Row="0" Style="{StaticResource MaterialDesignHeaderedContentControl}">
+        <GroupBox Padding="5" Margin="5,5,0,0" Header="Пациент"  HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0" Style="{StaticResource MaterialDesignHeaderedContentControl}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -72,10 +72,10 @@
                 <TextBox x:Name="textBoxAge" Grid.Column="1" Grid.Row="4" Margin="10,0,10,10" Text="{Binding Age, Mode=OneWay}" IsReadOnly="True"  materialDesign:HintAssist.Hint="Возраст" 
                          Style="{StaticResource MaterialDesignOutlinedTextBox}"/>                
                 <TextBox x:Name="textBoxSocSecNumber" Grid.ColumnSpan="2" Grid.Row="5"  materialDesign:HintAssist.Hint="Номер полиса:" Margin="10,0,10,10" Text="{Binding SocialSecurityNumber, Mode=TwoWay}" Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
-                <Button x:Name="savePatientButton" Grid.Column="0" Grid.Row="6" Content="Сохранить данные пациента" Margin="10,10,10,10" Padding ="5,0,5,0" Command="{Binding SavePatientCommand}" HorizontalAlignment="Left"/>            
+                <Button x:Name="savePatientButton" Grid.ColumnSpan="2" Grid.Row="6" Content="Сохранить данные пациента" Margin="10,10,10,10" Padding ="5,0,5,0" Command="{Binding SavePatientCommand}" HorizontalAlignment="Center"/>            
             </Grid>
         </GroupBox>
-        <GroupBox Header="Посещения" Grid.Row="1" Style="{StaticResource MaterialDesignHeaderedContentControl}"  >
+        <GroupBox  Margin="5,5,0,0" Header="Посещения" HorizontalAlignment="Center" Grid.Row="0" Grid.Column="1"  Style="{StaticResource MaterialDesignHeaderedContentControl}"  >
             <StackPanel Orientation="Vertical">
                 <!-- Кнопки управления -->
                 <StackPanel  Orientation="Horizontal" HorizontalAlignment="Left" Margin="5,0,5,0">

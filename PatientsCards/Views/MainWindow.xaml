@@ -7,7 +7,7 @@
         xmlns:converters="clr-namespace:PatientsCardsUI.Converters"
         mc:Ignorable="d"
         Style="{StaticResource MaterialDesignWindow}"
-        Title="Карточки пациентов" Height="650" Width="1000">
+        Title="Карточки пациентов" Height="650" Width="1200">
     <Window.DataContext>
         <local:MainViewModel/>
     </Window.DataContext>
