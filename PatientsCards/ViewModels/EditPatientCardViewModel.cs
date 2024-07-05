@@ -106,7 +106,14 @@ namespace PatientsCardsUI.ViewModels
 
         private void DeleteVisit()
         {
-            throw new NotImplementedException();
+            if (SelectedVisit == null)
+                return;
+            if (MessageBox.Show($"Вы уверены, что хотите удалить посещение за {SelectedVisit.DateVisit}?", "Удаление посещения", MessageBoxButton.YesNo, MessageBoxImage.Question)
+                == MessageBoxResult.Yes)
+            {
+                visitsService.Delete(SelectedVisit);
+                RefreshVisits();
+            }
         }
 
         private void EditVisit()

@@ -114,6 +114,15 @@ namespace App.Services
             if (string.IsNullOrEmpty(patient.SocialSecurityNumber))
                 throw new ValidateException("Не указан номер полиса!");
 
+            if (patient.DateOfBirth > DateTime.Now.Date)
+                throw new ValidateException("Дата рождения не может быть больше текущей!");
+
+            if(patient.DateOfBirth == default(DateTime))
+                throw new ValidateException("Не указана дата рождение");
+
+            if (patient.Age>150)
+                throw new ValidateException($"Человеку слишком много лет: {patient.Age}. Закапывайте, лечению не подлежит.");
+
             patient.SocialSecurityNumber = patient.SocialSecurityNumber.Trim();
             if(!patient.SocialSecurityNumber.IsNumeric())
                 throw new ValidateException("Номер полиса содержит недопустимые символы! Допустимы только цифры без пробелов!");
