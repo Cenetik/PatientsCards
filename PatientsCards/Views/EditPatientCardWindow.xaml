@@ -21,20 +21,21 @@
         </Grid.RowDefinitions>
 
         <!-- Поля для ввода -->
-        <GroupBox  Padding="5" Header="Пациент"  Grid.Row="0">
+        <GroupBox  Padding="5" Header="Пациент"  Grid.Row="0" Style="{StaticResource MaterialDesignHeaderedContentControl}">
             <StackPanel Orientation="Vertical">
                 <Label Content="Имя:" Margin="5,0,0,0"/>
-                <TextBox x:Name="textBoxName" Margin="10,0,10,10" Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                <TextBox x:Name="textBoxName" Margin="10,0,10,10" Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
                 <Label Content="Отчество:" Margin="5,0,0,0"/>
-                <TextBox x:Name="textBoxPatronymic" Margin="10,0,10,10" Text="{Binding Patronymic, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                <TextBox x:Name="textBoxPatronymic" Margin="10,0,10,10" Text="{Binding Patronymic, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
 
                 <Label Content="Фамилия:" Margin="5,0,0,0"/>
-                <TextBox x:Name="textBoxSurname" Margin="10,0,10,10" Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                <TextBox x:Name="textBoxSurname" Margin="10,0,10,10" Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Style="{StaticResource MaterialDesignOutlinedTextBox}" />
 
                 <Label Content="Пол:" Margin="5,0,0,0"/>
                 <!--<TextBox x:Name="textBoxGender" Margin="10,0,10,10" Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />-->
                 <ComboBox ItemsSource="{Binding Genders}"
                      SelectedItem="{Binding Gender, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                          Style="{StaticResource MaterialDesignOutlinedComboBox}"
                      Margin="10,0,10,10">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
@@ -44,33 +45,33 @@
                 </ComboBox>
 
                 <Label Content="Дата рождения:" Margin="5,0,0,0"/>
-                <DatePicker x:Name="datePickerDateOfBirth" Margin="10,0,10,10" SelectedDate="{Binding Path=DateOfBirth, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                <DatePicker x:Name="datePickerDateOfBirth" Margin="10,0,10,10" SelectedDate="{Binding Path=DateOfBirth, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"  Style="{StaticResource MaterialDesignOutlinedDatePicker}"/>
                 <Label Content="Возраст:" Margin="5,0,0,0"/>
-                <TextBox x:Name="textBoxAge" Margin="10,0,10,10" Text="{Binding Age, Mode=OneWay}" IsReadOnly="True"/>
+                <TextBox x:Name="textBoxAge" Margin="10,0,10,10" Text="{Binding Age, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
                 <Label Content="Номер полиса:" Margin="5,0,0,0"/>
-                <TextBox x:Name="textBoxSocSecNumber" Margin="10,0,10,10" Text="{Binding SocialSecurityNumber, Mode=TwoWay}" />
-                <Button x:Name="savePatientButton" Content="Сохранить данные пациента" Margin="0,10,10,0" Padding ="5,0,5,0" Command="{Binding SavePatientCommand}" HorizontalAlignment="Left"/>
+                <TextBox x:Name="textBoxSocSecNumber" Margin="10,0,10,10" Text="{Binding SocialSecurityNumber, Mode=TwoWay}" Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
+                <Button x:Name="savePatientButton" Content="Сохранить данные пациента" Margin="10,10,10,10" Padding ="5,0,5,0" Command="{Binding SavePatientCommand}" HorizontalAlignment="Left"/>
             </StackPanel>
         </GroupBox>
-        <GroupBox Header="Посещения" Grid.Row="1">
+        <GroupBox Header="Посещения" Grid.Row="1" Style="{StaticResource MaterialDesignHeaderedContentControl}" >
             <StackPanel Orientation="Vertical">
-        <!-- Кнопки управления -->
-        <StackPanel  Orientation="Horizontal" HorizontalAlignment="Left" Margin="5,0,5,0">
-            <Button x:Name="addButton" Content="Добавить посещение" Margin="0,10,10,0" Padding ="5,0,5,0" Command="{Binding AddVisitCommand}" />
-            <Button x:Name="editButton" Content="Редактировать посещение" Margin="0,10,10,0" Padding ="5,0,5,0" Command="{Binding EditVisitCommand}"/>
-            <Button x:Name="deleteButton" Content="Удалить посещение" Margin="0,10,10,0" Padding ="5,0,5,0" Command="{Binding DeleteVisitCommand}"/>
-        </StackPanel>
-        <!-- Таблица для отображения данных -->
-        <DataGrid ItemsSource="{Binding Visits, Mode=TwoWay}" SelectedItem="{Binding SelectedVisit, Mode=TwoWay}" 
+                <!-- Кнопки управления -->
+                <StackPanel  Orientation="Horizontal" HorizontalAlignment="Left" Margin="5,0,5,0">
+                    <Button x:Name="addButton" Content="Добавить посещение" Margin="0,10,10,0" Padding ="5,0,5,0" Command="{Binding AddVisitCommand}" />
+                    <Button x:Name="editButton" Content="Редактировать посещение" Margin="0,10,10,0" Padding ="5,0,5,0" Command="{Binding EditVisitCommand}"/>
+                    <Button x:Name="deleteButton" Content="Удалить посещение" Margin="0,10,10,0" Padding ="5,0,5,0" Command="{Binding DeleteVisitCommand}"/>
+                </StackPanel>
+                <!-- Таблица для отображения данных -->
+                <DataGrid ItemsSource="{Binding Visits, Mode=TwoWay}" SelectedItem="{Binding SelectedVisit, Mode=TwoWay}" 
                   x:Name="dataGridMain" Grid.Row="2" Margin="0,10" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" 
                   IsReadOnly="True">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Дата посещения" Binding="{Binding DateVisit, StringFormat='dd.MM.yyyy'}"/>
-                <DataGridTextColumn Header="Врач" Binding="{Binding Doctor}"/>
-                <DataGridTextColumn Header="Жалобы" Binding="{Binding Anamnesis}"/>
-                <DataGridTextColumn Header="Диагноз" Binding="{Binding Diagnosis}"/>
-            </DataGrid.Columns>
-        </DataGrid>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Дата посещения" Binding="{Binding DateVisit, StringFormat='dd.MM.yyyy'}"/>
+                        <DataGridTextColumn Header="Врач" Binding="{Binding Doctor}"/>
+                        <DataGridTextColumn Header="Жалобы" Binding="{Binding Anamnesis}"/>
+                        <DataGridTextColumn Header="Диагноз" Binding="{Binding Diagnosis}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
             </StackPanel>
         </GroupBox>
     </Grid>

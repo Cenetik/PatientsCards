@@ -17,22 +17,23 @@
         </Grid.RowDefinitions>  
         <StackPanel Orientation="Vertical" Grid.Row="0">
             <Label Content="Дата посещения врача:" Margin="5,0,0,0"/>
-            <DatePicker x:Name="datePickerDateVisit" Margin="10,0,10,10" SelectedDate="{Binding DateVisit, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+            <DatePicker x:Name="datePickerDateVisit" Margin="10,0,10,10" SelectedDate="{Binding DateVisit, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Style="{StaticResource MaterialDesignOutlinedDatePicker}"/>
             <Label Content="Пациент:" Margin="5,0,0,0"/>
-            <TextBox x:Name="textBoxName" Margin="10,0,10,10" Text="{Binding Patient, UpdateSourceTrigger=PropertyChanged, Mode=OneTime}" IsReadOnly="True" />            
+            <TextBox x:Name="textBoxName" Margin="10,0,10,10" Text="{Binding Patient, UpdateSourceTrigger=PropertyChanged, Mode=OneTime}" IsReadOnly="True" Style="{StaticResource MaterialDesignOutlinedTextBox}"/>            
             <Label Content="Врач:" Margin="5,0,0,0"/>
             <ComboBox x:Name="comboBoxDoctor"
+                       Style="{StaticResource MaterialDesignOutlinedComboBox}"
                       ItemsSource="{Binding Doctors, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                       SelectedItem="{Binding Doctor, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"   
                       SelectedValuePath="LastName"
                       Margin="10,0,10,10">                
             </ComboBox>
             <Label Content="Жалобы пациента" Margin="5,0,0,0"/>
-            <TextBox TextWrapping="Wrap" Height="50" Margin="10,0,10,10" Text="{Binding Anamnesis, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+            <TextBox TextWrapping="Wrap" Height="50" Margin="10,0,10,10" Text="{Binding Anamnesis, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
             <Label Content="Диагноз" Margin="5,0,0,0"/>
-            <TextBox TextWrapping="Wrap" Height="50" Margin="10,0,10,10" Text="{Binding Diagnosis, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>            
+            <TextBox TextWrapping="Wrap" Height="50" Margin="10,0,10,10" Text="{Binding Diagnosis, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Style="{StaticResource MaterialDesignOutlinedTextBox}"/>            
             <Label Content="Назначено лечение" Margin="5,0,0,0"/>
-            <TextBox TextWrapping="Wrap" Height="50" Margin="10,0,10,10" Text="{Binding Treatment, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+            <TextBox TextWrapping="Wrap" Height="50" Margin="10,0,10,10" Text="{Binding Treatment, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
         </StackPanel>
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5,0,5,0" VerticalAlignment="Bottom">
             <Button x:Name="addButton" Content="Сохранить" Margin="10,10,10,10" Padding ="5,0,5,0" Command="{Binding SaveVisitCommand}"/>
