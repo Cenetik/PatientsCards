@@ -3,7 +3,13 @@ using System.Configuration;
 using System.Data;
 using System.Windows;
 using App.Exceptions;
+using App.Services;
+using DataAccess.RepositoryImpls;
+using Domain.Models;
+using Domain;
 using PatientsCards;
+using PatientsCardsUI.Views;
+using PatientsCardsUI.ViewModels;
 
 namespace PatientsCardsUI
 {
@@ -12,6 +18,11 @@ namespace PatientsCardsUI
     /// </summary>
     public partial class App : Application
     {
+        private InMemoryBaseRepository<Doctor> doctorsRepository;
+        private InMemoryBaseRepository<Patient> patientsRepository;
+        private InMemoryBaseRepository<Visit> visitsRepository;
+        private InMemoryBaseRepository<User> usersRepository;
+
         public App()
         {
             //var serviceCollection = new ServiceCollection();
@@ -30,13 +41,28 @@ namespace PatientsCardsUI
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            var mainWindow = new MainWindow();
-
 
             this.DispatcherUnhandledException += App_DispatcherUnhandledException;
-            //var mainWindow = _serviceProvider.GetService<MainWindow>();
-            mainWindow.Show();
+            FillFakeData();
+
+            var loginWindow = new LoginWindow(new UsersService(usersRepository));
+            loginWindow.ShowDialog();
+            
+
+           // var mainWindow = new MainWindow();
+          //  mainWindow.DataContext = mainModel;
+            
+            //mainWindow.Show();
         }
+
+        private void FillFakeData()
+        {
+            var fakeDataFactory = new FakeDataFactory();
+            doctorsRepository = new InMemoryBaseRepository<Doctor>(fakeDataFactory.Doctors);
+            patientsRepository = new InMemoryBaseRepository<Patient>(fakeDataFactory.Patients);
+            visitsRepository = new InMemoryBaseRepository<Visit>(fakeDataFactory.Visits);
+            usersRepository = new InMemoryBaseRepository<User>(fakeDataFactory.Users);
+        }       
 
         private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {

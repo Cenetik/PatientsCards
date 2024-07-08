@@ -13,6 +13,7 @@ namespace Domain
         public readonly List<Doctor> Doctors;
         public readonly List<Patient> Patients;
         public readonly List<Visit> Visits;
+        public readonly List<User> Users;
 
         public FakeDataFactory()
         {
@@ -148,6 +149,12 @@ namespace Domain
                 v.Doctor.Visits.Add(v);
                 v.Patient.Visits.Add(v);
             }
+
+            Users = new List<User>();
+            var fakeUser1 = new User { Id = Guid.NewGuid(), Username="doctor1", Password="12345" };
+            var fakeUser2 = new User { Id = Guid.NewGuid(), Username = "patient1", Password = "12345" };
+            Users.Add(fakeUser1);
+            Users.Add(fakeUser2);
         }     
     }
 }

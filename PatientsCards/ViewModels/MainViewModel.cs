@@ -47,7 +47,25 @@ namespace PatientsCardsUI.ViewModels
         public ICommand DeletePatientCommand { get; set; }
         public ICommand ShowPatientCardCommand { get; set; }
 
-        public MainViewModel()
+       /* public MainViewModel() 
+        {
+            Patients = new ObservableCollection<PatientDto>();
+
+            AddPatientCommand = new RelayCommand(AddPatient);
+            EditPatientCommand = new RelayCommand(EditPatient);
+            DeletePatientCommand = new RelayCommand(DeletePatient);
+            ShowPatientCardCommand = new RelayCommand(ShowPatientCard);
+
+            var doctorRepo = new InMemoryBaseRepository<Doctor>(new List<Doctor>());
+            var patientsRepo = new InMemoryBaseRepository<Patient>(new List<Patient>());
+            var visitsRepo = new InMemoryBaseRepository<Visit>(new List<Visit>());
+
+            this.doctorService = new DoctorService(doctorRepo);
+            this.patientsService = new PatientsService(patientsRepo, visitsRepo);
+            this.visitsService = new VisitsService(visitsRepo,doctorRepo,patientsRepo);
+        }
+
+        public MainViewModel(DoctorService doctorService, PatientsService patientsService, VisitsService visitsService)
         {
             Patients = new ObservableCollection<PatientDto>();            
 
@@ -56,14 +74,32 @@ namespace PatientsCardsUI.ViewModels
             DeletePatientCommand = new RelayCommand(DeletePatient);
             ShowPatientCardCommand = new RelayCommand(ShowPatientCard);
 
-            var fakeDataFactory = new FakeDataFactory();
-            var doctorsRepository = new InMemoryBaseRepository<Doctor>(fakeDataFactory.Doctors);
-            var patientsRepository = new InMemoryBaseRepository<Patient>(fakeDataFactory.Patients);
-            var visitsRepository = new InMemoryBaseRepository<Visit>(fakeDataFactory.Visits);
+            this.doctorService = doctorService;
+            this.patientsService = patientsService;
+            this.visitsService = visitsService;
 
-            doctorService = new DoctorService(doctorsRepository);
-            patientsService = new PatientsService(patientsRepository,visitsRepository);
-            visitsService = new VisitsService(visitsRepository,doctorsRepository,patientsRepository);
+            RefreshView();            
+        }*/
+
+        public MainViewModel()
+        {
+            var fakeDataFactory = new FakeDataFactory();
+            var doctorsRepo = new InMemoryBaseRepository<Doctor>(fakeDataFactory.Doctors);
+            var patientsRepo = new InMemoryBaseRepository<Patient>(fakeDataFactory.Patients);
+            var visitsRepo = new InMemoryBaseRepository<Visit>(fakeDataFactory.Visits);
+            var usersRepo = new InMemoryBaseRepository<User>(fakeDataFactory.Users);
+
+            this.doctorService = new DoctorService(doctorsRepo);
+            this.patientsService = new PatientsService(patientsRepo, visitsRepo);
+            this.visitsService = new VisitsService(visitsRepo, doctorsRepo, patientsRepo);
+
+            Patients = new ObservableCollection<PatientDto>();
+
+            AddPatientCommand = new RelayCommand(AddPatient);
+            EditPatientCommand = new RelayCommand(EditPatient);
+            DeletePatientCommand = new RelayCommand(DeletePatient);
+            ShowPatientCardCommand = new RelayCommand(ShowPatientCard);
+
             RefreshView();
         }
 
