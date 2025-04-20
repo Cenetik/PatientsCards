@@ -10,6 +10,9 @@ using Domain;
 using PatientsCards;
 using PatientsCardsUI.Views;
 using PatientsCardsUI.ViewModels;
+using DataAccess;
+using Microsoft.EntityFrameworkCore;
+using Domain.Repositories;
 
 namespace PatientsCardsUI
 {
@@ -18,10 +21,10 @@ namespace PatientsCardsUI
     /// </summary>
     public partial class App : Application
     {
-        private InMemoryBaseRepository<Doctor> doctorsRepository;
-        private InMemoryBaseRepository<Patient> patientsRepository;
-        private InMemoryBaseRepository<Visit> visitsRepository;
-        private InMemoryBaseRepository<User> usersRepository;
+        private IRepository<Doctor> doctorsRepository;
+        private IRepository<Patient> patientsRepository;
+        private IRepository<Visit> visitsRepository;
+        private IRepository<User> usersRepository;
 
         public App()
         {
@@ -43,9 +46,16 @@ namespace PatientsCardsUI
             base.OnStartup(e);
 
             this.DispatcherUnhandledException += App_DispatcherUnhandledException;
-            FillFakeData();
 
-            var loginWindow = new LoginWindow(new UsersService(usersRepository));
+
+
+            //FillFakeDataInMemory();
+           // FillEfFakeData();
+            GlobalData.Context = GetNewContext();
+
+            var userRepository = new EfBaseRepository<User>(GlobalData.Context);
+
+            var loginWindow = new LoginWindow(new UsersService(userRepository));
             loginWindow.ShowDialog();
             
 
@@ -55,7 +65,64 @@ namespace PatientsCardsUI
             //mainWindow.Show();
         }
 
-        private void FillFakeData()
+        public ApplicationDbContext GetNewContext()
+        {
+            var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
+            optionsBuilder.UseSqlServer("Server=45.12.229.46,1433;Database=mydb;User Id=sa;Password=strongPassword123;TrustServerCertificate=true;");
+
+            var context = new ApplicationDbContext(optionsBuilder.Options);
+            return context;
+        }
+
+        private void FillEfFakeData()
+        {
+            using(var context = GetNewContext())
+            {
+                context.Rebuild();
+            }
+
+            var fakeDataFactory = new FakeDataFactory();
+            using (var context = GetNewContext())
+            {
+                var userRepository = new EfBaseRepository<User>(context);
+                foreach (var user in fakeDataFactory.Users)
+                {
+                    userRepository.Add(user);
+                }
+            }
+
+
+            foreach (var doctor in fakeDataFactory.Doctors)
+            {
+                using (var context = GetNewContext())
+                {
+                    var doctorRepository = new EfBaseRepository<Doctor>(context);
+                    doctorRepository.Add(doctor);
+                }
+            }
+
+            using (var context = GetNewContext())
+            {
+                var patientsRepository = new EfBaseRepository<Patient>(context);
+
+                foreach (var patient in fakeDataFactory.Patients)
+                {
+                    patientsRepository.Add(patient);
+                }
+            }
+
+            using (var context = GetNewContext())
+            {
+                var visitsRepository = new EfBaseRepository<Visit>(context);
+
+                foreach (var visit in fakeDataFactory.Visits)
+                {
+                    visitsRepository.Add(visit);
+                }
+            }
+        }
+
+        private void FillFakeDataInMemory()
         {
             var fakeDataFactory = new FakeDataFactory();
             doctorsRepository = new InMemoryBaseRepository<Doctor>(fakeDataFactory.Doctors);

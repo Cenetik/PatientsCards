@@ -2,7 +2,7 @@
 {
     public class Patient : Person
     {
-        public List<Visit> Visits { get; set;}
+        public virtual List<Visit> Visits { get; set;}
 
         public string SocialSecurityNumber { get; set; }
 

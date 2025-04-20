@@ -14,12 +14,14 @@ namespace App.Services
     public class PatientsService
     {
         private readonly IRepository<Patient> patientsRepository;
+        private readonly IRepository<Doctor> doctorsRepository;
         private readonly IRepository<Visit> visitsRepository;
 
-        public PatientsService(IRepository<Patient> patientsRepository, IRepository<Visit> visitsRepository)
+        public PatientsService(IRepository<Patient> patientsRepository, IRepository<Visit> visitsRepository, IRepository<Doctor> doctorRepository)
         {
             this.patientsRepository = patientsRepository;
             this.visitsRepository = visitsRepository;
+            this.doctorsRepository = doctorRepository;
         }
 
         public PatientDto GetById(Guid id)
@@ -48,7 +50,8 @@ namespace App.Services
             {
                 var lastVisit = visits.OrderBy(p => p.DateVisit).Last();
                 patient.LastVisitDate = lastVisit.DateVisit;
-                patient.LastVisitedDoctor = lastVisit.Doctor.ToDto();
+                var doctor = doctorsRepository.GetById(lastVisit.DoctorId).ToDto();
+                patient.LastVisitedDoctor = doctor;// lastVisit.Doctor.ToDto();
             }
         }
 

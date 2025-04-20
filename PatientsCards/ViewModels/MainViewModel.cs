@@ -83,14 +83,18 @@ namespace PatientsCardsUI.ViewModels
 
         public MainViewModel()
         {
-            var fakeDataFactory = new FakeDataFactory();
-            var doctorsRepo = new InMemoryBaseRepository<Doctor>(fakeDataFactory.Doctors);
-            var patientsRepo = new InMemoryBaseRepository<Patient>(fakeDataFactory.Patients);
-            var visitsRepo = new InMemoryBaseRepository<Visit>(fakeDataFactory.Visits);
-            var usersRepo = new InMemoryBaseRepository<User>(fakeDataFactory.Users);
+           //var fakeDataFactory = new FakeDataFactory();
+            //var doctorsRepo = new InMemoryBaseRepository<Doctor>(fakeDataFactory.Doctors);
+            //var patientsRepo = new InMemoryBaseRepository<Patient>(fakeDataFactory.Patients);
+            //var visitsRepo = new InMemoryBaseRepository<Visit>(fakeDataFactory.Visits);
+            //var usersRepo = new InMemoryBaseRepository<User>(fakeDataFactory.Users);
+            var doctorsRepo = new EfBaseRepository<Doctor>(GlobalData.Context);
+            var patientsRepo = new EfBaseRepository<Patient>(GlobalData.Context);
+            var visitsRepo = new EfBaseRepository<Visit>(GlobalData.Context);
+            var usersRepo = new EfBaseRepository<User>(GlobalData.Context);
 
             this.doctorService = new DoctorService(doctorsRepo);
-            this.patientsService = new PatientsService(patientsRepo, visitsRepo);
+            this.patientsService = new PatientsService(patientsRepo, visitsRepo, doctorsRepo);
             this.visitsService = new VisitsService(visitsRepo, doctorsRepo, patientsRepo);
 
             Patients = new ObservableCollection<PatientDto>();

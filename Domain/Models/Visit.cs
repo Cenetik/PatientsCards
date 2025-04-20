@@ -13,10 +13,12 @@ namespace Domain.Models
         public string Diagnosis { get; set; }
         
         public string Anamnesis { get; set; }
+        
+        public Guid DoctorId { get; set; }
+        public virtual Doctor? Doctor { get; set; }
 
-        public Doctor Doctor { get; set; }
-
-        public Patient Patient { get; set; }        
+        public Guid PatientId { get; set; }
+        public virtual Patient? Patient { get; set; }        
         
         public string Treatment { get; set; }   
     }    
